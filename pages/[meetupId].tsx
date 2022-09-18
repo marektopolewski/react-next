@@ -37,7 +37,9 @@ export default MeetupDetails;
 export const getStaticPaths = async () => {
   const comments = await fetchMeetups();
   return {
-    fallback: false, // all paths are covered
+    // fallback: false // all paths are covered, 404 if no match
+    // fallback: true, // some paths are missing, show fallback until page is loaded
+    fallback: 'blocking', // some paths are missing, blocl until page is loaded
     paths: comments.map((comment) => {
       return { params: { meetupId: comment.id } };
     }),
