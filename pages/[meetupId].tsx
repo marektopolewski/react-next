@@ -1,3 +1,4 @@
+import { GetStaticProps } from "next";
 import MeetupDetail from "../components/meetups/MeetupDetail";
 
 import { Meetup } from "../types";
@@ -14,12 +15,31 @@ const MEETUP: Meetup = {
     XV w. przez zakon krzyżacki.`,
 };
 
-const MeetupDetails = () => {
+const MeetupDetails: React.FC<{ meetup: Meetup }> = (props) => {
   return (
     <>
-      <MeetupDetail meetup={MEETUP} />
+      <MeetupDetail meetup={props.meetup} />
     </>
   );
 };
 
 export default MeetupDetails;
+
+export const getStaticPaths = async () => {
+  return {
+    fallback: false, // all paths are covered
+    paths: [
+      { params: { meetupId: "m1" } },
+      { params: { meetupId: "m2" } },
+      { params: { meetupId: "m3" } },
+    ],
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const { params } = context;
+  return {
+    props: { meetup: { ...MEETUP, id: params?.meetupId } },
+    revalidate: 5,
+  };
+};
