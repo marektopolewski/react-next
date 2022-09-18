@@ -1,4 +1,5 @@
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
+import Head from "next/head";
 
 import MeetupList from "../components/meetups/MeetupList";
 
@@ -10,7 +11,16 @@ const HomePage: React.FC<{ meetups: Meetup[] }> = (props) => {
   useEffect(() => {
     setMeetups(MEETUPS); // gets set in 2nd render cycle :(
   }, []);*/
-  return <MeetupList meetups={props.meetups} />;
+  return (
+    <>
+      <Head>
+        <title>Meetups: React + Next + Mongo</title>
+        <meta name='description' content='Meetups: React + Next + Mongo' />
+        <meta charSet='utf=8' />
+      </Head>
+      <MeetupList meetups={props.meetups} />
+    </>
+  );
 };
 
 /*export const getStaticProps: GetStaticProps = async (context) => {

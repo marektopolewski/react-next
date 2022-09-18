@@ -1,9 +1,11 @@
 import { GetStaticProps } from "next";
-import MeetupDetail from "../components/meetups/MeetupDetail";
+import Head from "next/head";
 
-import { Meetup } from "../types";
 import { fetchMeetup } from "./api/meetup";
 import { fetchMeetups } from "./api/meetups";
+
+import MeetupDetail from "../components/meetups/MeetupDetail";
+import { Meetup } from "../types";
 
 const MEETUP: Meetup = {
   id: "m1",
@@ -20,6 +22,11 @@ const MEETUP: Meetup = {
 const MeetupDetails: React.FC<{ meetup: Meetup | null }> = (props) => {
   return (
     <>
+      <Head>
+        <title>Meetup Details: React + Next + Mongo</title>
+        <meta name='description' content={`Meetup details: ${props.meetup?.title}`} />
+        <meta charSet='utf=8' />
+      </Head>
       {props.meetup && <MeetupDetail meetup={props.meetup} />}
     </>
   );
