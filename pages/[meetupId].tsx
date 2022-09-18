@@ -2,6 +2,8 @@ import { GetStaticProps } from "next";
 import MeetupDetail from "../components/meetups/MeetupDetail";
 
 import { Meetup } from "../types";
+import { fetchMeetup } from "./api/meetup";
+import { fetchMeetups } from "./api/meetups";
 
 const MEETUP: Meetup = {
   id: "m1",
@@ -15,10 +17,10 @@ const MEETUP: Meetup = {
     XV w. przez zakon krzyżacki.`,
 };
 
-const MeetupDetails: React.FC<{ meetup: Meetup }> = (props) => {
+const MeetupDetails: React.FC<{ meetup: Meetup | null }> = (props) => {
   return (
     <>
-      <MeetupDetail meetup={props.meetup} />
+      {props.meetup && <MeetupDetail meetup={props.meetup} />}
     </>
   );
 };
@@ -26,20 +28,22 @@ const MeetupDetails: React.FC<{ meetup: Meetup }> = (props) => {
 export default MeetupDetails;
 
 export const getStaticPaths = async () => {
+  const comments = await fetchMeetups();
   return {
     fallback: false, // all paths are covered
-    paths: [
-      { params: { meetupId: "m1" } },
-      { params: { meetupId: "m2" } },
-      { params: { meetupId: "m3" } },
-    ],
+    paths: comments.map((comment) => {
+      return { params: { meetupId: comment.id } };
+    }),
   };
 };
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const { params } = context;
+  let meetup: Meetup | null = null;
+  if (params && params.meetupId)
+    meetup = await fetchMeetup(params.meetupId as string);
   return {
-    props: { meetup: { ...MEETUP, id: params?.meetupId } },
+    props: { meetup },
     revalidate: 5,
   };
 };
